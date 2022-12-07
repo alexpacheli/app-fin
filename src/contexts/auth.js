@@ -8,6 +8,7 @@ export const AuthContext = createContext({});
 function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [loadingAuth, setLoadingAuth] = useState(false);
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -24,9 +25,7 @@ function AuthProvider({ children }) {
 
                     setUser(data);
                     setLoading(false);
-                }, {
-                    onlyOnce: true
-                })
+                });
 
                 return;
             }
@@ -38,6 +37,8 @@ function AuthProvider({ children }) {
 
     //Login Usuário
     async function signIn(email, password) {
+        setLoadingAuth(true);
+
         await signInWithEmailAndPassword(auth, email, password)
             .then(async (userCredential) => {
                 let uid = userCredential.user.uid;
@@ -51,13 +52,15 @@ function AuthProvider({ children }) {
                     }
 
                     setUser(data);
+                    setLoadingAuth(false);
 
                 }, {
                     onlyOnce: true
                 })
             })
             .catch((error) => {
-                alert(error.message)
+                alert(error.message);
+                setLoadingAuth(false);
             })
     }
 
@@ -72,6 +75,8 @@ function AuthProvider({ children }) {
 
     //Cadastrar Usuário
     async function signUp(email, password, nome) {
+        setLoadingAuth(true);
+
         createUserWithEmailAndPassword(auth, email, password)
             .then(async (userCredential) => {
                 let uid = userCredential.user.uid;
@@ -85,18 +90,21 @@ function AuthProvider({ children }) {
                             uid: uid,
                             nome: nome,
                             email: userCredential.user.email,
+                            saldo: 0
                         }
 
                         setUser(data);
+                        setLoadingAuth(false);
                     })
             })
             .catch((error) => {
                 alert(error.message);
+                setLoadingAuth(false);
             })
     }
 
     return (
-        <AuthContext.Provider value={{ signed: !!user, user, loading, signUp, signIn, signOutFb }}>
+        <AuthContext.Provider value={{ signed: !!user, user, loading, loadingAuth, signUp, signIn, signOutFb }}>
             {children}
         </AuthContext.Provider>
     )
