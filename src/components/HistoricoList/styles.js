@@ -36,3 +36,17 @@ color: #222;
 font-size: 22px;
 font-weight: bold;
 `;
+
+export const DateView = styled.View`
+justify-content: center;
+background-color: #000;
+border-radius: 7px;
+margin-left: 5px;
+padding-left: 8px;
+padding-right: 8px;
+`;
+
+export const TipoTextDate = styled.Text`
+color: #fff;
+padding: 3px
+`;

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, Keyboard, TouchableWithoutFeedback, Alert } from 'react-native';
+import { View, Text, Keyboard, TouchableWithoutFeedback, Alert, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Background, Input, SubmitButton, SubmitText } from './styles';
 import Picker from '../../components/Picker';
@@ -35,19 +35,19 @@ export default function New({ navigation }) {
         },
         {
           text: 'Continuar',
-          onPress: () => handleAdd()
+          onPress: () => { handleAdd() } 
         }
       ]
     )
   }
 
-  function handleAdd() {
+  async function handleAdd() {
     let newPostKey = push(ref(db, 'historico/' + user.id)).key;
 
-    set(ref(db, 'historico/' + user.uid + '/' + newPostKey), {
+    await set(ref(db, 'historico/' + user.uid + '/' + newPostKey), {
       tipo: tipo,
       valor: parseFloat(valor),
-      date: format(new Date(), 'dd/MM/yy')
+      date: format(new Date(), 'dd/MM/yyyy')
     })
     .then(() => {
 
@@ -58,17 +58,20 @@ export default function New({ navigation }) {
 
         update(ref(db, 'users/' + user.uid), {
           saldo: saldoNew
+        })
+        .then(() => {
+          alert('Registro efetuado!');
+          Keyboard.dismiss();
+          setValor('');
+        })
+        .finally(() => {
+          navigation.navigate('Home');
         });
 
       }, {
         onlyOnce: true
       });
     });
-
-    Keyboard.dismiss();
-    setValor('');
-
-    navigation.navigate('Home');
   }
 
   return (
@@ -87,7 +90,7 @@ export default function New({ navigation }) {
           <Picker onChange={setTipo} tipo={tipo} />
 
           <SubmitButton onPress={handleSubmit}>
-            <SubmitText>Registrar</SubmitText>
+              <SubmitText>Registrar</SubmitText>
           </SubmitButton>
         </SafeAreaView>
       </Background>
