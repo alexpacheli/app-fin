@@ -70,7 +70,7 @@ export default function Home() {
         },
         {
           text: 'Continuar',
-          onPress: () => handleDeleteSuccess(data)
+          onPress: () => handleDeleteSuccess()
         }
       ]
     )
@@ -118,7 +118,7 @@ export default function Home() {
         <TouchableOpacity onPress={handleShowPicker}>
           <Icon name="event" size={30} color="#FFF" />
         </TouchableOpacity>
-        <Title>Últimas movimentações</Title>
+        <Title>Últimos lançamentos ({format(newDate, 'dd/mm/yy')})</Title>
       </Area>
       
       <List
